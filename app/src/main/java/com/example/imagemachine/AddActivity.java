@@ -70,6 +70,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
                 Machine newMachine = new Machine();
 
+                //sets the value to the machine class
                 newMachine.ID = Integer.parseInt(machineIDET.getText().toString());
                 newMachine.name = machineNameET.getText().toString();
                 newMachine.type = machineTypeET.getText().toString();
@@ -78,6 +79,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
                 db.addMachine(newMachine);
 
+                //Alert dialog when SQL is executed and close the activity, back to main activity
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(AddActivity.this);
                 alertDialog.setIcon(android.R.drawable.ic_dialog_info)
                         .setTitle("Info")
@@ -90,16 +92,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                             }
                         })
                         .show();
-
-//                Snackbar.make(view, "Added 1 new data", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//                try{
-//                    Toast.makeText(getApplicationContext(), "Added 1 new data", Toast.LENGTH_LONG);
-//                    Thread.sleep(2000);
-//                    finish();
-//                }catch (Exception e){
-//
-//                }
             }
         });
 
@@ -116,11 +108,12 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             public void onDateSet(DatePicker view, int year, int month, int day) {
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, month, day);
-                machineDateET.setText(dateFormatter.format(newDate.getTime()));
+                machineDateET.setText(dateFormatter.format(newDate.getTime())); //sets the value to date field
             }
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
+    //Click event for the date picker on date edittext
     @Override
     public void onClick(View view) {
         if(view == machineDateET){

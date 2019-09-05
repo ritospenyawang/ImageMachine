@@ -80,17 +80,21 @@ public class QRActivity extends AppCompatActivity {
                 SparseArray<Barcode> qrCodes = detections.getDetectedItems();
 
                 if(qrCodes.size() != 0){
+                    //vibrates phone to notify that qr code is scanned successfully
                     Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     vibrator.vibrate(1000);
 
+                    //prepare the edit machine activity
                     Intent intent = new Intent(QRActivity.this, EditActivity.class);
 
                     MachineDB db = MachineDB.getInstance(QRActivity.this);
 
+                    //get the specific machine associated with the qr code scanned
                     Machine machine = db.getMachine(Integer.parseInt(qrCodes.valueAt(0).displayValue));
 
                     Bundle bundle = new Bundle();
 
+                    //put all the information in bundle to be sent to edit machine activity
                     bundle.putInt("machineID", machine.ID);
                     bundle.putString("machineName", machine.name);
                     bundle.putString("machineType", machine.type);
