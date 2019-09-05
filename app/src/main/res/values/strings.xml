@@ -9,4 +9,6 @@
     <string name="machine_qr">Machine QR Code</string>
     <string name="machine_date">Last Maintenance Date</string>
     <string name="btnSave">Save</string>
+    <string name="btnPickImg">Select Img</string>
+    <string name="btnNextImg">Next Img</string>
 </resources>
