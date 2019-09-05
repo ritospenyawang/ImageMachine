@@ -1,33 +1,51 @@
 package com.example.imagemachine;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class AddActivity extends AppCompatActivity implements View.OnClickListener {
-    Button btnSave;
+    Button btnSave, btnImg, btnNext;
 
     EditText machineIDET, machineNameET, machineTypeET, machineQRET, machineDateET;
 
     DatePickerDialog machineDatePD;
 
     SimpleDateFormat dateFormatter;
+
+    private int PICK_IMAGE_REQUEST = 1;
+
+    ImageView imageView;
+
+    private List<Uri> selectedImage = null;
+
+    private int currentDisplayedImg = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +63,45 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         machineDateET.setShowSoftInputOnFocus(false);
 
         btnSave = (Button) findViewById(R.id.btnSave);
+        btnImg = (Button) findViewById(R.id.btnImg);
+        btnNext = (Button) findViewById(R.id.btnNextImg);
+
+        imageView = (ImageView) findViewById(R.id.imageView);
+
+        btnImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Choose Image"), PICK_IMAGE_REQUEST);
+            }
+        });
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(selectedImage != null){
+                    Uri currentImg = selectedImage.get(currentDisplayedImg);
+
+                    try{
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), currentImg);
+
+                        imageView.setImageBitmap(bitmap);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    int size = selectedImage.size();
+
+                    if(currentDisplayedImg >= (size - 1)){
+                        currentDisplayedImg = 0;
+                    }
+                    else currentDisplayedImg++;
+                }
+            }
+        });
 
         setDateField();
 
@@ -118,6 +175,30 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     public void onClick(View view) {
         if(view == machineDateET){
             machineDatePD.show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
+            Uri uri = data.getData();
+
+            if(selectedImage == null){
+                selectedImage = new ArrayList<Uri>();
+            }
+            selectedImage.add(uri);
+
+            try{
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+
+                imageView.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
