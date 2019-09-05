@@ -3,10 +3,11 @@
 Image Machine app for ProSpace Android Technical Test
 
 Things that is functional (for now):
-- Add new machine (image hasn't been implemented yet)
+- Add new machine
 - SQLite for database
 - QR Code Scanner
 - DatePicker
+- Multiple images in 1 image viewer (saving hasn't been implemented yet)
 
 Database Schema:
 
